@@ -1,0 +1,36 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "title": "Serrapeptase Nattokinase",
+      "description": "Ферменты против тромбов.",
+      "details": "Serrapeptase и Nattokinase — мощные ферменты, способствующие разжижению крови и профилактике тромбов. Помогают поддерживать здоровье сердечно-сосудистой системы.",
+      "image": "images/image.png",
+      "reverse": false
+    },
+    {
+      "id": 2,
+      "title": "Prostate Formula",
+      "description": "Контроль, комфорт, уверенность.",
+      "details": "Prostate Formula — комплекс для поддержки здоровья предстательной железы, снижает воспаление и улучшает комфорт.",
+      "image": "images/image2.jpg",
+      "reverse": true
+    },
+    {
+      "id": 3,
+      "title": "NAC",
+      "description": "Глубокая защита. Лёгкое дыхание.",
+      "details": "NAC (N-ацетилцистеин) способствует детоксикации организма, защищает легкие и поддерживает иммунитет.",
+      "image": "images/image3.1.jpg",
+      "reverse": false
+    },
+    {
+      "id": 4,
+      "title": "Amanita Muscaria",
+      "description": "Внутренняя точка баланса.",
+      "details": "Экстракт мухомора для восстановления баланса в организме и поддержки нервной системы.",
+      "image": "images/image4.jpg",
+      "reverse": true
+    }
+  ]
+}
