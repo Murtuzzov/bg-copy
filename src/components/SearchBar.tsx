@@ -10,28 +10,28 @@ const SearchBar: FC<SearchBarProps> = ({ searchTerm, onSearch }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const inputRef = useRef<HTMLInputElement | null>(null);
 
+  // При монтировании задаём isMobile и isOpen изначально
   useEffect(() => {
-    const checkIsMobile = () => {
-      const mobile = window.innerWidth < 768;
-      setIsMobile(mobile);
-      setIsOpen(!mobile); // открыт по умолчанию только на десктопе
-    };
-
-    checkIsMobile();
-    window.addEventListener("resize", checkIsMobile);
-    return () => window.removeEventListener("resize", checkIsMobile);
+    const mobile = window.innerWidth < 768;
+    setIsMobile(mobile);
+    setIsOpen(!mobile); // открыт по умолчанию только на десктопе
   }, []);
 
-  // Прокрутка при открытии на мобилке и установка фокуса
+  // Обновляем isMobile при ресайзе, но НЕ меняем isOpen
+  useEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth < 768;
+      setIsMobile(mobile);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Прокрутка при открытии на мобилке
   useEffect(() => {
     if (isOpen && containerRef.current) {
       containerRef.current.scrollIntoView({ behavior: "smooth" });
-      // Фокусируем input после открытия
-      setTimeout(() => {
-        inputRef.current?.focus();
-      }, 300); // небольшой таймаут, чтобы избежать конфликтов с анимацией
     }
   }, [isOpen]);
 
@@ -70,13 +70,12 @@ const SearchBar: FC<SearchBarProps> = ({ searchTerm, onSearch }) => {
           style={{ transformOrigin: "top" }}
         >
           <input
-            ref={inputRef}
             type="text"
             placeholder="Поиск по товарам..."
             value={searchTerm}
             onChange={(e) => onSearch(e.target.value)}
             className="w-full pl-10 pr-4 py-2 text-white bg-[#1f1f22] rounded-full focus:outline-none placeholder-gray-400 shadow-md"
-            // Убираем autoFocus, теперь ставим фокус вручную
+            autoFocus={isMobile}
           />
           <svg
             className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2 pointer-events-none"
