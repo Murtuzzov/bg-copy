@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import type { Product } from "../types";
+import { FaTelegramPlane, FaInstagram, FaWhatsapp } from "react-icons/fa";
 
 function ProductDetails() {
   const { id } = useParams<{ id: string }>();
@@ -37,17 +38,20 @@ function ProductDetails() {
   }, [id]);
 
   if (loading) {
-    return <div className="text-white p-4">Загрузка...</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#0f0f10] text-white">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white"></div>
+      </div>
+    );
   }
 
   if (error) {
     return (
-      <div className="text-white p-4">
-        Ошибка: {error}
-        <br />
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#0f0f10] text-white p-4">
+        <p className="text-red-400 mb-4">Ошибка: {error}</p>
         <button
           onClick={() => navigate("/")}
-          className="mt-4 px-4 py-2 bg-gray-700 rounded hover:bg-gray-600"
+          className="px-4 py-2 bg-gray-700 rounded hover:bg-gray-600"
         >
           Назад на главную
         </button>
@@ -57,12 +61,11 @@ function ProductDetails() {
 
   if (!product) {
     return (
-      <div className="text-white p-4">
-        Продукт не найден.
-        <br />
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#0f0f10] text-white p-4">
+        <p className="mb-4">Продукт не найден.</p>
         <button
           onClick={() => navigate("/")}
-          className="mt-4 px-4 py-2 bg-gray-700 rounded hover:bg-gray-600"
+          className="px-4 py-2 bg-gray-700 rounded hover:bg-gray-600"
         >
           Назад на главную
         </button>
@@ -90,12 +93,51 @@ function ProductDetails() {
           <p className="text-lg mb-4">{product.description}</p>
           <p className="text-base leading-relaxed mb-8">{product.details}</p>
 
-          <button
-            onClick={() => navigate("/")}
-            className="self-start text-white border border-white rounded-full px-5 py-2 hover:bg-white hover:text-black transition-colors"
-          >
-            ← Назад
-          </button>
+          {/* Связаться с менеджером */}
+          <div className="mb-6">
+            <h2 className="text-xl font-semibold mb-4">
+              Связаться с менеджером
+            </h2>
+            <div className="flex space-x-6 text-white text-3xl">
+              <a
+                href="https://t.me/your_telegram" // замените на реальную ссылку
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Telegram"
+                className="hover:text-[#0088cc] transition-colors"
+              >
+                <FaTelegramPlane />
+              </a>
+              <a
+                href="https://instagram.com/your_instagram" // замените на реальную ссылку
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+                className="hover:text-pink-500 transition-colors"
+              >
+                <FaInstagram />
+              </a>
+              <a
+                href="https://wa.me/your_number" // замените на реальную ссылку
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="WhatsApp"
+                className="hover:text-green-500 transition-colors"
+              >
+                <FaWhatsapp />
+              </a>
+            </div>
+          </div>
+
+          {/* Кнопка Назад слева под связью с менеджером */}
+          <div className="w-full flex justify-start mt-8 pb-10">
+            <button
+              onClick={() => navigate("/")}
+              className="text-white border border-white rounded-full px-6 py-2 hover:bg-white hover:text-black transition-colors"
+            >
+              ← Назад
+            </button>
+          </div>
         </div>
       </div>
     </main>

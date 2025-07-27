@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import ProductCard from "../components/ProductCard";
+import SearchBar from "../components/SearchBar";
 import type { Product } from "../types";
 
 function transliterate(text: string): string {
@@ -48,11 +49,16 @@ function transliterate(text: string): string {
 function Home() {
   const [products, setProducts] = useState<Product[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    setLoading(true);
     fetch(`${import.meta.env.VITE_API_URL}/products`)
       .then((res) => res.json())
-      .then((data) => setProducts(data));
+      .then((data) => {
+        setProducts(data);
+        setLoading(false);
+      });
   }, []);
 
   const normalizedSearch = searchTerm.toLowerCase();
@@ -61,7 +67,6 @@ function Home() {
   const filteredProducts = products.filter((product) => {
     const title = product.title.toLowerCase();
     const description = product.description.toLowerCase();
-
     const titleTranslit = transliterate(title);
     const descriptionTranslit = transliterate(description);
 
@@ -75,30 +80,13 @@ function Home() {
 
   return (
     <div className="min-h-screen bg-[#0f0f10] flex flex-col items-center justify-start p-4 text-white space-y-6">
-      {/* Поисковик */}
-      <div className="relative w-full max-w-screen-md">
-        <input
-          type="text"
-          placeholder="Поиск по товарам..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full pl-10 pr-4 py-2 rounded-lg text-black focus:outline-none border border-gray-400 bg-gray-100"
-        />
-        <svg
-          className="w-5 h-5 text-gray-600 absolute left-3 top-1/2 transform -translate-y-1/2 pointer-events-none"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          viewBox="0 0 24 24"
-        >
-          <circle cx="11" cy="11" r="7" />
-          <line x1="21" y1="21" x2="16.65" y2="16.65" />
-        </svg>
-      </div>
+      <SearchBar searchTerm={searchTerm} onSearch={setSearchTerm} />
 
-      {/* Карточки */}
-      {filteredProducts.length > 0 ? (
+      {loading ? (
+        <div className="flex justify-center items-center min-h-[40vh]">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white"></div>
+        </div>
+      ) : filteredProducts.length > 0 ? (
         filteredProducts.map((product) => (
           <ProductCard
             key={product.id}

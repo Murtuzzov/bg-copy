@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 interface ProductCardProps {
@@ -7,6 +7,8 @@ interface ProductCardProps {
   description: string;
   image: string;
   reverse?: boolean;
+  animate?: boolean; // флаг анимации появления
+  animationDelay?: number; // задержка анимации (мс)
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
@@ -15,8 +17,23 @@ const ProductCard: React.FC<ProductCardProps> = ({
   description,
   image,
   reverse = false,
+  animate = false,
+  animationDelay = 0,
 }) => {
-  console.log("ProductCard id:", id); // Лог для проверки id
+  const [isVisible, setIsVisible] = useState(!animate);
+  const [isPressed, setIsPressed] = useState(false);
+
+  useEffect(() => {
+    if (animate) {
+      const timer = setTimeout(() => setIsVisible(true), animationDelay);
+      return () => clearTimeout(timer);
+    }
+  }, [animate, animationDelay]);
+
+  // Обработчики для мобилки: при тапе создаём эффект поднятия
+  const handleTouchStart = () => setIsPressed(true);
+  const handleTouchEnd = () => setIsPressed(false);
+  const handleTouchCancel = () => setIsPressed(false);
 
   const imageWrapperClasses = reverse
     ? "w-24 sm:w-32 md:w-40 lg:w-56 xl:w-64 shrink-0 min-h-[120px] sm:min-h-0 rounded-r-2xl overflow-hidden"
@@ -28,7 +45,20 @@ const ProductCard: React.FC<ProductCardProps> = ({
         w-[90%] max-w-screen-xl bg-[#151617] rounded-2xl overflow-hidden shadow-lg 
         min-h-[160px] h-auto 
         transition-transform transition-shadow duration-300 ease-out 
-        hover:-translate-y-1 hover:scale-[1.015] hover:shadow-xl`}
+        hover:-translate-y-1 hover:scale-[1.015] hover:shadow-xl
+
+        transform transition-opacity duration-700 ease-out
+        ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}
+
+        ${isPressed ? "scale-[1.02] shadow-xl" : ""}
+      `}
+      style={{
+        willChange: "opacity, transform",
+        transitionDelay: `${animationDelay}ms`,
+      }}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+      onTouchCancel={handleTouchCancel}
     >
       <div className={imageWrapperClasses}>
         <img
